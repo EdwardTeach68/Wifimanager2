@@ -24,21 +24,22 @@
         android:text="Disconnect" />
 
     <TextView
-        android:id="@+id/SSID"
+        android:id="@+id/connectionInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/Disconnect"
         android:layout_below="@+id/Disconnect"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="80dp"
-        android:layout_toEndOf="@+id/Disconnect"
+        android:layout_marginEnd="13dp"
+        android:layout_marginTop="57dp"
         android:text="TextView" />
 
     <TextView
-        android:id="@+id/Pass"
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/SSID"
-        android:layout_centerVertical="true"
-        android:text="TextView" />
+        android:text="TextView"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/connectionInfo"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
