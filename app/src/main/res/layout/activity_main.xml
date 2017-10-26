@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.igor.wifimanager2.MainActivity">
+
+    <Button
+        android:id="@+id/connect_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connect"
+        tools:layout_editor_absoluteX="151dp"
+        tools:layout_editor_absoluteY="222dp" />
+
+    <Button
+        android:id="@+id/Disconnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/connect_btn"
+        android:layout_below="@+id/connect_btn"
+        android:layout_marginTop="33dp"
+        android:text="Disconnect" />
+
+    <TextView
+        android:id="@+id/SSID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Disconnect"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="80dp"
+        android:layout_toEndOf="@+id/Disconnect"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/Pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/SSID"
+        android:layout_centerVertical="true"
+        android:text="TextView" />
+
+</RelativeLayout>
