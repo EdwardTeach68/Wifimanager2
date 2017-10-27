@@ -109,8 +109,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void showNotification(String title){
         NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
-
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -125,9 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 .setContentText("Подключенно к: "+title)
                // .setSound(Uri.parse("android.resource://com.example.alexdev.notificationtutor/" + R.raw.calltoprayer2))
                 .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
-
         ;
-
         android.app.Notification notification = builder.build();
         notificationManager.notify(NOTOFOCANION_ID, notification);
     }
