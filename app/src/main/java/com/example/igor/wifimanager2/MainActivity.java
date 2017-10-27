@@ -2,8 +2,10 @@ package com.example.igor.wifimanager2;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
 import android.net.wifi.ScanResult;
 import android.net.wifi.SupplicantState;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -29,20 +32,20 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity {
     String networkSSID = "Arounda";
     String networkPass = "27101996";
-    
+    ArrayList<Wifi> WifiList = new ArrayList<Wifi>();
     Button Connect_btn;
     Button Disconnect_btn;
     public TextView con_txt,txtview;
 
     boolean tryConnect,wifiEanabled;
-
+    ArrayList<HashMap<String, String>> arraylist = new ArrayList<HashMap<String, String>>();
     WifiManager wifiManager;
     SupplicantState connectionInfo;
     int netId,prevNetId;
-
+    int size = 0;
     MyTask mt;
 
-    List<ScanResult> wifiList;
+    List<ScanResult> ScanList = new ArrayList<>();
 
     private static final int NOTOFOCANION_ID =132 ;
 
@@ -51,13 +54,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Wifi NewWiFi = new Wifi("Arounda","27101996");
+        WifiList.add(NewWiFi);
+        NewWiFi = new Wifi("DIR-300_15/1","13198155");
+        WifiList.add(NewWiFi);
+        NewWiFi = new Wifi("AlexDev's iPhone","asdfghjkl");
+        WifiList.add(NewWiFi);
 
         Connect_btn = (Button) findViewById(R.id.connect_btn);
         con_txt = (TextView) findViewById(R.id.connectionInfo);
         txtview= (TextView) findViewById(R.id.textView2);
         Disconnect_btn = (Button) findViewById(R.id.Disconnect);
 
-        wifiManager = (WifiManager)MainActivity.this.getSystemService(WIFI_SERVICE);
+        wifiManager = (WifiManager)getApplicationContext().getSystemService(WIFI_SERVICE);
 
         Disconnect_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,7 +78,11 @@ public class MainActivity extends AppCompatActivity {
         Connect_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ConnectToWifi();
+                Scan();
+
+
+
+
             }
         });
 
@@ -81,26 +94,49 @@ public class MainActivity extends AppCompatActivity {
                 mt.execute();
             };
         }, 0L, 2L * 1000);
+
+        registerReceiver(new BroadcastReceiver()
+        {
+            @Override
+            public void onReceive(Context c, Intent intent)
+            {
+                ScanList = wifiManager.getScanResults();
+                size = ScanList.size();
+            }
+        }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+
+
     }
 
     public void Scan(){
-        wifiList = wifiManager.getScanResults();
-        for (ScanResult scanResult : wifiList) {
+        /*wifiManager.startScan();
+        ScanList = wifiManager.getScanResults();
+        for (ScanResult scanResult : ScanList) {
             int level = WifiManager.calculateSignalLevel(scanResult.level, 5);
-
-            if(level>3){
-                //scanResult.SSID
+            txtview.setText(scanResult.SSID);
+            if(level>3 && WiFiConnectionInfo() !="COMPLETED" ){
+              if(scanResult.SSID == WifiList.get(0).networkSSID)
+                  ConnectToWifi(scanResult.SSID,WifiList.get(0).networkPass);
             }
         }
 
+        for (ScanResult result : ScanList) {
+            Toast.makeText(this, result.SSID + " " + result.level,
+                    Toast.LENGTH_SHORT).show();
+        }*/
+        arraylist.clear();
+        wifiManager.startScan();
+
+        Toast.makeText(this, "Scanning...." + size, Toast.LENGTH_SHORT).show();
+
     }
 
-    public void ConnectToWifi(){
+    public void ConnectToWifi(String ssid,String pass){
         wifiManager.removeNetwork(netId);
         tryConnect = true;
         WifiConfiguration wifiConfig = new WifiConfiguration();
-        wifiConfig.SSID = String.format("\"%s\"", networkSSID);
-        wifiConfig.preSharedKey = String.format("\"%s\"", networkPass);
+        wifiConfig.SSID = String.format("\"%s\"", ssid);
+        wifiConfig.preSharedKey = String.format("\"%s\"", pass);
         netId = wifiManager.addNetwork(wifiConfig);
         wifiManager.disconnect();
         wifiManager.enableNetwork(netId, true);
@@ -180,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
             con_txt.setText(result);
             Toast toast = Toast.makeText(getApplicationContext(),
                     result, Toast.LENGTH_SHORT);
-            toast.show();
+            //toast.show();
         }
 
 
