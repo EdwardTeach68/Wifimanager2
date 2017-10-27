@@ -98,8 +98,6 @@ public class MainActivity extends AppCompatActivity {
         if(connectionInfo.toString() == "SCANNING" && !tryConnect)
             wifiManager.removeNetwork(netId);
         return connectionInfo.toString();
-
-
     }
 
     public void Disconnect(){
