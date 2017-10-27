@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
     public void Disconnect(){
         wifiManager.disconnect();
         wifiManager.removeNetwork(netId);
+        
     }
 
 
