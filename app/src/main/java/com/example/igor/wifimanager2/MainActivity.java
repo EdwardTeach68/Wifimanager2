@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
     public String WiFiConnectionInfo(){
         connectionInfo = wifiManager.getConnectionInfo().getSupplicantState();
         if(connectionInfo.toString() == "COMPLETED")
+
             showNotification(wifiManager.getConnectionInfo().getSSID());
             tryConnect=false;
         if(connectionInfo.toString() == "SCANNING" && !tryConnect)
