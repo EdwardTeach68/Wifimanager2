@@ -29,11 +29,11 @@ public class MainActivity extends AppCompatActivity {
     Button Disconnect_btn;
     public TextView con_txt,txtview;
 
-    boolean tryConnect;
+    boolean tryConnect,wifiEanabled;
 
     WifiManager wifiManager;
     SupplicantState connectionInfo;
-    int netId;
+    int netId,prevNetId;
 
     MyTask mt;
 
@@ -92,13 +92,28 @@ public class MainActivity extends AppCompatActivity {
 
     public String WiFiConnectionInfo(){
         connectionInfo = wifiManager.getConnectionInfo().getSupplicantState();
-        if(connectionInfo.toString() == "COMPLETED")
-
+        if(connectionInfo.toString() == "COMPLETED") {
             showNotification(wifiManager.getConnectionInfo().getSSID());
-            tryConnect=false;
+            tryConnect = false;
+        }
         if(connectionInfo.toString() == "SCANNING" && !tryConnect)
             wifiManager.removeNetwork(netId);
         return connectionInfo.toString();
+    }
+
+    public void WiFiState(){
+        if(!wifiManager.isWifiEnabled() && !wifiEanabled){
+            wifiEanabled = true;
+            prevNetId = netId;
+
+        }
+        if(wifiManager.isWifiEnabled() && wifiEanabled){
+            wifiManager.removeNetwork(prevNetId);
+            wifiEanabled = false;
+            wifiManager.startScan();
+        }
+
+
     }
 
     public void Disconnect(){
@@ -133,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... noargs) {
+            WiFiState();
             return WiFiConnectionInfo();
         }
 
