@@ -22,8 +22,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
-    String networkSSID = "Home_wifi_1";
-    String networkPass = "09820639";
+    String networkSSID = "Arounda";
+    String networkPass = "27101996";
 
     Button Connect_btn;
     Button Disconnect_btn;
@@ -91,25 +91,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String WiFiConnectionInfo(){
-        connectionInfo = wifiManager.getConnectionInfo().getSupplicantState();
-        if(connectionInfo.toString() == "COMPLETED") {
-            showNotification(wifiManager.getConnectionInfo().getSSID());
-            tryConnect = false;
+        if(wifiManager.isWifiEnabled()) {
+            connectionInfo = wifiManager.getConnectionInfo().getSupplicantState();
+            if (connectionInfo.toString() == "COMPLETED") {
+                showNotification("Подключенно к: " + wifiManager.getConnectionInfo().getSSID());
+                tryConnect = false;
+            }
+            if (connectionInfo.toString() == "SCANNING" && !tryConnect) {
+                showNotification("Поиск сети");
+                wifiManager.removeNetwork(netId);
+            }
         }
-        if(connectionInfo.toString() == "SCANNING" && !tryConnect)
-            wifiManager.removeNetwork(netId);
         return connectionInfo.toString();
     }
 
     public void WiFiState(){
-        if(!wifiManager.isWifiEnabled() && !wifiEanabled){
-            wifiEanabled = true;
+        if(!wifiManager.isWifiEnabled()){
             prevNetId = netId;
 
         }
-        if(wifiManager.isWifiEnabled() && wifiEanabled){
-            wifiManager.removeNetwork(prevNetId);
-            wifiEanabled = false;
+        if(wifiManager.isWifiEnabled()){
+            if(prevNetId!=0) {
+                wifiManager.removeNetwork(prevNetId);
+                prevNetId = 0;
+            }
+
             wifiManager.startScan();
         }
 
@@ -136,9 +142,9 @@ public class MainActivity extends AppCompatActivity {
                 .setWhen(System.currentTimeMillis())
                 .setAutoCancel(true)
                 .setContentTitle("WiFi Manager")
-                .setContentText("Подключенно к: "+title)
+                .setContentText(title)
                // .setSound(Uri.parse("android.resource://com.example.alexdev.notificationtutor/" + R.raw.calltoprayer2))
-                .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+                //.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
         ;
         android.app.Notification notification = builder.build();
         notificationManager.notify(NOTOFOCANION_ID, notification);
