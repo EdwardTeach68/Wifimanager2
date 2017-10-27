@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.net.wifi.ScanResult;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
@@ -17,14 +18,18 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
+
+
 public class MainActivity extends AppCompatActivity {
     String networkSSID = "Arounda";
     String networkPass = "27101996";
-
+    
     Button Connect_btn;
     Button Disconnect_btn;
     public TextView con_txt,txtview;
@@ -37,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     MyTask mt;
 
-    List<WifiConfiguration> WifiConfig;
+    List<ScanResult> wifiList;
 
     private static final int NOTOFOCANION_ID =132 ;
 
@@ -46,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Connect_btn = (Button) findViewById(R.id.connect_btn);
         con_txt = (TextView) findViewById(R.id.connectionInfo);
         txtview= (TextView) findViewById(R.id.textView2);
@@ -75,6 +81,18 @@ public class MainActivity extends AppCompatActivity {
                 mt.execute();
             };
         }, 0L, 2L * 1000);
+    }
+
+    public void Scan(){
+        wifiList = wifiManager.getScanResults();
+        for (ScanResult scanResult : wifiList) {
+            int level = WifiManager.calculateSignalLevel(scanResult.level, 5);
+
+            if(level>3){
+                //scanResult.SSID
+            }
+        }
+
     }
 
     public void ConnectToWifi(){
