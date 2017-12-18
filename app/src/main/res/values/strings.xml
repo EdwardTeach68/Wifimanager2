@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Wifimanager</string>
+    <string name="facebook_app_id">245965585941017</string>
+    <string name="fb_login_protocol_scheme">fb245965585941017</string>
 </resources>

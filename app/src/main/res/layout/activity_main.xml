@@ -12,25 +12,34 @@
         android:layout_height="wrap_content"
         android:text="Start"
         tools:layout_editor_absoluteX="151dp"
-        tools:layout_editor_absoluteY="222dp" />
+        tools:layout_editor_absoluteY="222dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:id="@+id/Disconnect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/connect_btn"
+        android:text="Stop"
         android:layout_below="@+id/connect_btn"
-        android:layout_marginTop="33dp"
-        android:text="Stop" />
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="12dp" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/Disconnect"
-        android:layout_below="@+id/Disconnect"
-        android:layout_marginEnd="13dp"
-        android:layout_marginTop="38dp"
-        android:text="TextView" />
+        android:text="TextView"
+        android:layout_below="@+id/connect_btn"
+        android:layout_toEndOf="@+id/connect_btn"
+        android:layout_marginStart="58dp" />
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/Disconnect"/>
+
+
 
 </RelativeLayout>

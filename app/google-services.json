@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "250317287994",
+    "firebase_url": "https://wifimanager-6fefa.firebaseio.com",
+    "project_id": "wifimanager-6fefa",
+    "storage_bucket": "wifimanager-6fefa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:250317287994:android:36e963228e798e3b",
+        "android_client_info": {
+          "package_name": "com.example.igor.wifimanager2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "250317287994-qom4pvdtr6ctuq9piuv2020o2d09u0ga.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.igor.wifimanager2",
+            "certificate_hash": "d02f412c4d88a212dbe5638b6c8b3d7644950538"
+          }
+        },
+        {
+          "client_id": "250317287994-1m8m8av3qssi4urj6fa62fn1m0od3n7v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0FTh8zbiXw9Vt_UKQIPpI4AhqJAXA3Ks"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "250317287994-1m8m8av3qssi4urj6fa62fn1m0od3n7v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

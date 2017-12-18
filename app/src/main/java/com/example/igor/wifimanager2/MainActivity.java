@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.net.wifi.ScanResult;
@@ -21,7 +22,11 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +45,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -53,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     Button Connect_btn;
     Button Disconnect_btn;
     TextView con_txt;
+    ListView lv;
 
     boolean tryConnect,isStarted;
     WifiManager wifiManager;
@@ -60,12 +67,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     int netId,prevNetId=-1;
 
     public int BestWifiID;
-    int rssiLevel;
+    public String Status;
+    int rssiLevel,size=0;
 
     MyTask mt;
 
     List<ScanResult> ScanList = new ArrayList<>();
     ScanResult ScanElement;
+
+
+    String ITEM_KEY = "key";
+    ArrayList<HashMap<String, String>> arraylist = new ArrayList<HashMap<String, String>>();
+    SimpleAdapter adapter;
+
+
 
 
     private GoogleApiClient mGoogleApiClient;
@@ -83,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         Wifi NewWiFi = new Wifi("Home_Wi-Fi","09820639");
         WifiList.add(NewWiFi);
         NewWiFi = new Wifi("Home_wifi_1","09820639");
+        WifiList.add(NewWiFi);
+        NewWiFi = new Wifi("Arounda","27101996");
         WifiList.add(NewWiFi);
         NewWiFi = new Wifi("DIR-300_15/1","13198155");
         WifiList.add(NewWiFi);
@@ -114,9 +131,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 isStarted=true;
             }
         });
+        lv = (ListView)findViewById(R.id.list);
+
+        this.adapter = new SimpleAdapter(MainActivity.this, arraylist, R.layout.row, new String[] { ITEM_KEY }, new int[] { R.id.list_value });
+        lv.setAdapter(this.adapter);
 
         auth();
         getWifiPremission();
+
+        /*registerReceiver(new BroadcastReceiver()
+        {
+            @Override
+            public void onReceive(Context c, Intent intent)
+            {
+                ScanList = wifiManager.getScanResults();
+                size = ScanList.size();
+            }
+        }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));*/
 
         Timer myTimer = new Timer();
         myTimer.schedule(new TimerTask() {
@@ -227,6 +258,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     public void Scan(){
         wifiManager.startScan();
         ScanList = wifiManager.getScanResults();
+        size = ScanList.size();
         if(connectionInfo.toString() !="COMPLETED" && !tryConnect){
             rssiLevel =0;
             FindBestConnection();
@@ -249,7 +281,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
 
         }
-        if(!WifiList.get(BestWifiID).networkSSID.equals(wifiManager.getConnectionInfo().getSSID()) && WifiManager.calculateSignalLevel(wifiManager.getConnectionInfo().getRssi(), 5)<WifiManager.calculateSignalLevel(ScanElement.level,5))
+
+        if(wifiManager.isWifiEnabled()&&!WifiList.get(BestWifiID).networkSSID.equals(wifiManager.getConnectionInfo().getSSID()) && WifiManager.calculateSignalLevel(wifiManager.getConnectionInfo().getRssi(), 5)<WifiManager.calculateSignalLevel(ScanElement.level,5))
             ConnectToWifi(WifiList.get(BestWifiID).networkSSID,WifiList.get(BestWifiID).networkPass);
 
     }
@@ -281,15 +314,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         if(wifiManager.isWifiEnabled()) {
 
             if (connectionInfo.toString() == "COMPLETED") {
-                showNotification("Подключено к: " + wifiManager.getConnectionInfo().getSSID());
+                Status = "Подключено к: " + wifiManager.getConnectionInfo().getSSID();
+                showNotification(Status);
                 tryConnect = false;
             }
             if (connectionInfo.toString() == "SCANNING" && !tryConnect) {
-                showNotification("Поиск сети...");
+                Status = "Поиск сети...";
+                showNotification(Status);
                 wifiManager.removeNetwork(netId);
             }
         }else{
-            showNotification("Wi-Fi отключен");
+            Status = "Wi-Fi отключен";
+            showNotification(Status);
 
         }
         return connectionInfo.toString();
@@ -314,7 +350,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     public void Disconnect(){
         isStarted = false;
-        showNotification("Stoped");
+        Status = "Stoped";
+        showNotification("Status");
         wifiManager.removeNetwork(netId);
 
     }
@@ -333,8 +370,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 .setWhen(System.currentTimeMillis())
                 .setContentTitle("WiFi Manager")
                 .setContentText(title)
-                .setOngoing(true)
-        ;
+                .setOngoing(true);
         /*Intent yesReceive = new Intent();
         yesReceive.setAction("STOP_ACTION");
         PendingIntent pendingIntentYes = PendingIntent.getBroadcast(this, 12345, yesReceive, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -350,6 +386,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         @Override
         protected String doInBackground(Void... noargs) {
+            //WiFiConnectionInfo();
             if(isStarted) {
                 WiFiConnectionInfo();
                 WiFiState();
@@ -359,13 +396,59 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         }
 
         protected void  onPostExecute(String result) {
-            con_txt.setText(" "+WifiManager.calculateSignalLevel(wifiManager.getConnectionInfo().getRssi(),5));
-            /*Toast toast = Toast.makeText(getApplicationContext(),
-                    result, Toast.LENGTH_SHORT);
-            toast.show();*/
+            con_txt.setText(Status);
+            arraylist.clear();
+            try
+            {
+                size = 0;
+                while (size <= ScanList.size()-1)
+                {
+                    HashMap<String, String> item = new HashMap<String, String>();
+                    item.put(ITEM_KEY, ScanList.get(size).SSID );
+
+                    arraylist.add(item);
+                    size++;
+                    adapter.notifyDataSetChanged();
+                }
+            }
+            catch (Exception e)
+            { }
+
         }
 
 
     }
+
+    /*class CustomAdapter extends BaseAdapter{
+        TextView name;
+        TextView level;
+        @Override
+        public int getCount() {
+            return ScanList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            convertView = getLayoutInflater().inflate(R.layout.row,null);
+            name = convertView.findViewById(R.id.list_value);
+            level = convertView.findViewById(R.id.list_level);
+
+
+            return null;
+        }
+    }*/
+
 }
 
